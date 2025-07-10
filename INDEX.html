@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Integrated Voting System</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body, html { height: 100%; font-family: Arial, sans-serif; overflow-x: hidden; }
+
+    video {
+      position: fixed; top: 0; left: 0; min-width: 100%; min-height: 100%;
+      object-fit: cover; z-index: -1;
+    }
+
+    .welcome-screen {
+      height: 100%; width: 100%;
+      display: flex; justify-content: center; align-items: center; flex-direction: column;
+      color: white; text-shadow: 2px 2px 5px #000;
+      animation: fadeIn 2s ease-in-out; text-align: center;
+    }
+    .welcome-screen h1 { font-size: 3rem; margin-bottom: 20px; }
+    .welcome-screen h2 { font-size: 1.5rem; margin-bottom: 30px; }
+    .enter-btn {
+      padding: 12px 25px; font-size: 1.2rem;
+      background-color: rgba(255,255,255,0.2); border: 2px solid white; border-radius: 10px;
+      color: white; cursor: pointer; transition: all 0.3s ease;
+    }
+    .enter-btn:hover { background-color: white; color: black; }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+    .hidden { display: none; }
+
+    .role-selector, .container {
+      background: #b1b0b0; padding: 30px; border-radius: 10px; box-shadow: 0 0 15px rgba(0,0,0,0.2);
+      text-align: center; margin-bottom: 20px;
+    }
+    .role-selector button {
+      background: skyblue; color: #0d0d0d; border: none; border-radius: 5px; cursor: pointer;
+      padding: 15px 30px; margin: 10px; font-size: 16px; transition: background 0.3s ease;
+    }
+    .role-selector button:hover { background: deepskyblue; }
+    .container { position: relative; width: 400px; max-width: 90%; }
+    .signup-container { width: 600px; }
+    .button-toggle {
+      position: absolute; top: -40px; left: 0; right: 0;
+      display: flex; justify-content: center; gap: 10px;
+    }
+    .button-toggle button, .submit-btn {
+      background: rgb(35, 170, 224); color: #fff; border: none; border-radius: 5px; cursor: pointer;
+      padding: 10px 20px; width: 100%;
+    }
+    .form-group { margin-bottom: 15px; position: relative; }
+    label { display: block; margin-bottom: 5px; }
+    input, textarea {
+      width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px;
+      box-sizing: border-box;
+    }
+    .eye-toggle { position: absolute; right: 20px; top: 35px; cursor: pointer; }
+    .captcha-box {
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .captcha-box span {
+      display: inline-block; min-width: 80px; text-align: center; font-weight: bold;
+    }
+    .message, .error-message, #selectedRole {
+      text-align: center; margin-bottom: 10px;
+    }
+    .message { color: green; }
+    .error-message { color: red; }
+
+    /* Admin Dashboard */
+    .admin-dashboard {
+      display: flex; height: 100vh;
+    }
+    .admin-dashboard nav {
+      width: 220px; background: #0d6efd; color: white; display: flex; flex-direction: column;
+    }
+    .admin-dashboard nav h2 {
+      text-align: center; padding: 20px 0; border-bottom: 1px solid rgba(255,255,255,0.2);
+    }
+    .admin-dashboard nav a {
+      color: white; text-decoration: none; padding: 15px 20px; display: block;
+      border-bottom: 1px solid rgba(255,255,255,0.2);
+      transition: background 0.3s ease;
+    }
+    .admin-dashboard nav a:hover {
+      background: rgba(255,255,255,0.1);
+    }
+    .admin-dashboard .main-content {
+      flex: 1; padding: 40px; background: #f4f4f4; overflow-y: auto;
+    }
+    .admin-dashboard .main-content h1 {
+      margin-bottom: 20px;
+    }
+    .admin-dashboard form {
+      background: white; padding: 30px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      max-width: 600px;
+    }
+
+    /* Voter Dashboard */
+    .voter-dashboard nav {
+      background: #0d6efd; color: white; padding: 15px 30px;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .voter-dashboard .nav-links {
+      display: flex; align-items: center;
+    }
+    .voter-dashboard a {
+      color: white; text-decoration: none; margin-left: 20px;
+    }
+    .voter-dashboard a:hover { text-decoration: underline; }
+    .dropdown { position: relative; display: inline-block; }
+    .dropdown-content {
+      display: none; position: absolute; background-color: rgb(223, 225, 229); color: black;
+      min-width: 160px; box-shadow: 0px 8px 16px rgba(0,0,0,0.2); z-index: 1;
+    }
+    .dropdown-content a {
+      color: black; padding: 12px 16px; text-decoration: none; display: block;
+    }
+    .dropdown-content a:hover { background-color: #bcb9b9; }
+    .dropdown:hover .dropdown-content { display: block; }
+    .hero {
+      max-width: 800px; margin: 40px auto; background: rgb(216, 213, 213); padding: 30px; border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    .btn {
+      display: inline-block; background: #0d6efd; color: white; padding: 10px 20px;
+      text-decoration: none; border-radius: 5px; margin-top: 20px;
+    }
+    .btn:hover { background: #0b5ed7; }
+
+    /* Center voting system after Enter */
+    #votingSystem {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      overflow-y: auto;
+    }
+  </style>
+</head>
+<body>
+
+  <video autoplay muted loop>
+    <source src="welcome.mp4" type="video/mp4">
+  </video>
+
+  <!-- Welcome -->
+  <div class="welcome-screen" id="welcomeScreen">
+    <h1>Welcome</h1>
+    <h2>Safe and Secure Voting Environment</h2>
+    <button class="enter-btn" onclick="enterSite()">Enter</button>
+  </div>
+
+  <!-- Voting System -->
+  <div id="votingSystem" class="hidden">
+    <div class="role-selector" id="roleSelector">
+      <h2>Select User Type</h2>
+      <button onclick="selectRole('Admin')">Login/Register as Admin</button>
+      <button onclick="selectRole('Voter')">Login/Register as Voter</button>
+    </div>
+    <div id="selectedRole" style="font-weight: bold;"></div>
+
+    <!-- Login -->
+    <div id="loginContainer" class="container hidden">
+      <div class="button-toggle">
+        <button onclick="showLogin()">Log In</button>
+        <button onclick="showSignup()">Sign Up</button>
+      </div>
+      <div class="form-group">
+        <label for="aadhaarLogin">Enter Aadhaar No.</label>
+        <input id="aadhaarLogin" maxlength="12">
+      </div>
+      <div class="form-group">
+        <label for="passwordLogin">Enter Password</label>
+        <input type="password" id="passwordLogin">
+        <span class="eye-toggle" onclick="togglePassword('passwordLogin')">👁️</span>
+      </div>
+      <div class="form-group captcha-box">
+        <input id="captchaInput" placeholder="Enter CAPTCHA">
+        <span id="captchaValue"></span>
+        <button onclick="generateCaptcha()">↻</button>
+      </div>
+      <button class="submit-btn" onclick="loginUser()">Login</button>
+    </div>
+
+    <!-- Signup -->
+    <div id="signupContainer" class="container signup-container hidden">
+      <div class="button-toggle">
+        <button onclick="showLogin()">Log In</button>
+        <button onclick="showSignup()">Sign Up</button>
+      </div>
+      <div class="form-group"><label>Name</label><input id="nameSignup"></div>
+      <div class="form-group"><label>Aadhaar No.</label><input id="aadhaarSignup" maxlength="12"></div>
+      <div class="form-group"><label>DOB</label><input type="date" id="dobSignup"></div>
+      <div class="form-group"><label>Password</label><input type="password" id="passwordSignup"></div>
+      <button class="submit-btn" onclick="showLogin()">Sign Up</button>
+    </div>
+  </div>
+
+  <!-- Admin Dashboard -->
+  <div id="adminDashboard" class="admin-dashboard hidden">
+    <nav>
+      <h2>Admin Panel</h2>
+      <a href="#">Create Election</a>
+      <a href="#">Election Details</a>
+      <a href="#">Candidates</a>
+      <a href="#">Add Candidates</a>
+      <a href="#">Settings</a>
+    </nav>
+    <div class="main-content">
+      <h1>Create New Election</h1>
+      <form>
+        <div class="form-group"><label>Election Name</label><input type="text"></div>
+        <div class="form-group"><label>Election Date</label><input type="date"></div>
+        <div class="form-group"><label>Description</label><textarea rows="4"></textarea></div>
+        <button type="submit">Create Election</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Voter Dashboard -->
+  <div id="voterDashboard" class="voter-dashboard hidden">
+    <nav>
+      <h2>Voter Dashboard</h2>
+      <div class="nav-links">
+        <a href="#">Elections</a>
+        <a href="#">Results</a>
+      </div>
+    </nav>
+    <div class="hero">
+      <h2>Welcome, Voter!</h2>
+      <p>You can view your eligible elections, vote securely, and check results.</p>
+      <a href="#" class="btn">View Available Elections</a>
+    </div>
+  </div>
+
+  <script>
+    
+let selectedUserRole = "";
+
+function enterSite() {
+  document.getElementById("welcomeScreen").style.display = "none";
+  document.getElementById("votingSystem").classList.remove("hidden");
+}
+
+function selectRole(role) {
+  selectedUserRole = role;
+  document.getElementById("selectedRole").textContent = "You selected: " + role;
+  document.getElementById("roleSelector").classList.add("hidden");
+  showLogin();
+}
+
+function showLogin() {
+  document.getElementById("loginContainer").classList.remove("hidden");
+  document.getElementById("signupContainer").classList.add("hidden");
+  generateCaptcha();
+}
+
+function showSignup() {
+  document.getElementById("signupContainer").classList.remove("hidden");
+  document.getElementById("loginContainer").classList.add("hidden");
+}
+
+function togglePassword(id) {
+  const input = document.getElementById(id);
+  input.type = input.type === "password" ? "text" : "password";
+}
+
+function generateCaptcha() {
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890';
+  document.getElementById("captchaValue").textContent = Array.from({ length: 5 }, () =>
+    chars[Math.floor(Math.random() * chars.length)]
+  ).join('');
+}
+
+function loginUser() {
+  const inputCaptcha = document.getElementById("captchaInput").value.trim();
+  const captcha = document.getElementById("captchaValue").textContent.trim();
+  const aadhaar = document.getElementById("aadhaarLogin").value.trim();
+  const password = document.getElementById("passwordLogin").value.trim();
+
+  if (!aadhaar || !password) {
+    alert("Please enter Aadhaar and Password");
+    return;
+  }
+
+  if (inputCaptcha !== captcha) {
+    alert("Incorrect CAPTCHA");
+    return;
+  }
+
+  if (selectedUserRole === "Admin") {
+    window.location.href = "admin.html";
+  } else if (selectedUserRole === "Voter") {
+    window.location.href = "VOTER.html";
+  } else {
+    alert("Please select a role first");
+  }
+}
+
+generateCaptcha();
+
+
+  </script>
+
+</body>
+</html>
