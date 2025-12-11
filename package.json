@@ -1,0 +1,20 @@
+{
+  "name": "ezyvoting-contracts",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "compile": "npx hardhat compile",
+    "test": "npx hardhat test",
+    "deploy:localhost": "npx hardhat run scripts/deploy.js --network hardhat",
+    "deploy:sepolia": "npx hardhat run scripts/deploy.js --network sepolia",
+    "verify:sepolia": "npx hardhat run scripts/verify.js --network sepolia",
+    "seed:localhost": "npx hardhat run scripts/seedDemo.js --network hardhat",
+    "seed:sepolia": "npx hardhat run scripts/seedDemo.js --network sepolia"
+  },
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^3.0.0",
+    "@nomiclabs/hardhat-etherscan": "^3.1.7",
+    "dotenv": "^16.3.1",
+    "hardhat": "^2.18.0"
+  }
+}

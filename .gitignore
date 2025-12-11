@@ -1,0 +1,219 @@
+# ============================================================================
+# EZYVOTING - COMPREHENSIVE .gitignore
+# Full-Stack Blockchain Voting System
+# Hardhat + Express.js + Next.js + MongoDB + Node.js
+# ============================================================================
+
+# ============================================================================
+# DEPENDENCIES - NEVER COMMIT
+# 706 MB of node_modules across all directories
+# ============================================================================
+node_modules/
+*/node_modules/
+backend/node_modules/
+frontend/node_modules/
+.pnp
+.pnp.js
+yarn.lock
+lerna-debug.log*
+
+# ============================================================================
+# ENVIRONMENT VARIABLES - SECURITY CRITICAL ⚠️
+# Never commit .env files with API keys, private keys, database URLs
+# ============================================================================
+.env
+.env.local
+.env.*.local
+.env.production.local
+.env.development.local
+.env.test.local
+backend/.env
+backend/.env.local
+backend/.env.production.local
+frontend/.env.local
+frontend/.env.production.local
+
+# Exception: commit .example files as templates
+!.env.example
+!backend/.env.example
+!frontend/.env.example
+
+# ============================================================================
+# HARDHAT & BLOCKCHAIN BUILD ARTIFACTS
+# Generated during `hardhat compile` - 716 KB
+# Keep source .sol files, exclude compiled outputs
+# ============================================================================
+artifacts/
+typechain/
+typechain-types/
+cache/
+solidity-files-cache.json
+.hardhat/
+
+# ============================================================================
+# NEXT.JS BUILD & CACHE - 234 MB
+# Regenerated on `npm run dev` or `npm run build`
+# ============================================================================
+frontend/.next/
+frontend/.nuxt/
+frontend/dist/
+frontend/out/
+frontend/.cache/
+frontend/.turbo/
+frontend/.eslintcache
+
+# ============================================================================
+# EXPRESS/BACKEND BUILD ARTIFACTS
+# Regenerated on compile/build
+# ============================================================================
+backend/dist/
+backend/build/
+backend/lib/
+backend/.cache/
+
+# ============================================================================
+# LOGS & DEBUG FILES
+# ============================================================================
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+debug.log
+error.log
+*.trace
+*.pid
+*.seed
+*.pid.lock
+
+# ============================================================================
+# TESTING & COVERAGE
+# ============================================================================
+coverage/
+.nyc_output/
+test-results/
+*.lcov
+.jest_cache/
+.jestcache/
+htmlcov/
+.mocha/
+
+# ============================================================================
+# LOCAL DEVELOPMENT FILES
+# ============================================================================
+.vscode/
+.vscode-test/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+*.sublime-project
+*.sublime-workspace
+.env.local.swp
+
+# ============================================================================
+# macOS SYSTEM FILES
+# ============================================================================
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+.Spotlight-V100
+.Trashes
+.VolumeIcon.icns
+*.dmg
+*.app
+
+# ============================================================================
+# WINDOWS SYSTEM FILES
+# ============================================================================
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+*.exe
+*.msi
+*.lnk
+
+# ============================================================================
+# LINUX SYSTEM FILES
+# ============================================================================
+.directory
+.Trash-*
+
+# ============================================================================
+# TEMPORARY & CACHE FILES
+# ============================================================================
+tmp/
+temp/
+*.tmp
+*.bak
+*.swp
+*.orig
+.vuepress/dist
+dist_electron/
+electron-builder-effective-config.json
+
+# ============================================================================
+# DATABASE FILES
+# ============================================================================
+mongodb_data/
+data/
+*.mongodb
+mongodblocal
+*.db
+
+# ============================================================================
+# IDE WORKSPACE FILES
+# ============================================================================
+.eslintcache
+.stylelintcache
+
+# ============================================================================
+# PROJECT-SPECIFIC: Deployment & Config Files with Secrets
+# ============================================================================
+deployed-address.txt
+CONTRACT_ADDRESS=*
+NEXT_PUBLIC_CONTRACT_ADDRESS=*
+
+# ============================================================================
+# PROJECT-SPECIFIC: Old/Migrated Files
+# ============================================================================
+INDEX.html
+VOTER.html
+admin.html
+welcome.mp4
+*.mp4
+*.avi
+*.mov
+*.mkv
+
+# ============================================================================
+# BUILD OUTPUTS
+# ============================================================================
+dist/
+build/
+lib/
+es/
+
+# ============================================================================
+# FORCE TRACKING - Important files to always include
+# ============================================================================
+!.github/
+!.github/**
+!.gitignore
+!README.md
+!package.json
+!package-lock.json
+!backend/package.json
+!backend/package-lock.json
+!frontend/package.json
+!frontend/package-lock.json
+!hardhat.config.js
+!backend/.env.example
+!frontend/.env.example
+!.env.example
